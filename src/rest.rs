@@ -601,6 +601,17 @@ fn handle_request(
     query: &Query,
     config: &Config,
 ) -> Result<Response<Body>, HttpError> {
+    if method == Method::OPTIONS {
+        return Ok(Response::builder()
+            .status(StatusCode::OK)
+            .header("Access-Control-Allow-Origin", "*")
+            .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+            .header("Access-Control-Allow-Headers", "Content-Type, Accept, Authorization")
+            .body(Body::empty())
+            .unwrap());
+    }
+
+
     // TODO it looks hyper does not have routing and query parsing :(
     let path: Vec<&str> = uri.path().split('/').skip(1).collect();
     let query_params = match uri.query() {
